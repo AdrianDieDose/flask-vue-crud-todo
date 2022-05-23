@@ -2,6 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Ping from '../components/Ping.vue';
 import Home from '../components/HelloWorld.vue';
+import ToDo from '../components/ToDo.vue';
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,11 @@ const routes = [
     path: '/ping',
     name: 'Ping',
     component: Ping,
+  },
+  {
+    path: '/todo',
+    name: 'ToDo',
+    component: ToDo,
   },
 ];
 

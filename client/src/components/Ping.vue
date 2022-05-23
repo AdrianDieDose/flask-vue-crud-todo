@@ -1,6 +1,7 @@
 <template>
   <div>
-    <p>{{ msg }}</p>
+    <h1>This is a Flask message:</h1>
+    <button type="button" class="btn btn-primary">{{ msg }}</button>
   </div>
 </template>
 
@@ -17,7 +18,8 @@ export default {
   methods: {
     getMessage() {
       const path = 'http://localhost:5000/ping';
-      axios.get(path)
+      axios
+        .get(path)
         .then((res) => {
           this.msg = res.data;
         })
