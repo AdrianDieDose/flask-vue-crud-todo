@@ -1,11 +1,23 @@
 <template>
-  <div id="nav">
-    <b-nav pills small>
-      <b-nav-item class="item" active>Active</b-nav-item>
-      <b-nav-item class="item">Link</b-nav-item>
-      <b-nav-item class="item">Another Link</b-nav-item>
-      <b-nav-item class="item" disabled>Disabled</b-nav-item>
-    </b-nav>
+  <div>
+    <b-navbar id="nav" toggleable type="dark" variant="primary">
+      <b-navbar-brand href="./">Flask + Vue</b-navbar-brand>
+
+      <b-navbar-toggle target="navbar-toggle-collapse">
+        <template #default="{ expanded }">
+          <b-icon v-if="expanded" icon="chevron-bar-up"></b-icon>
+          <b-icon v-else icon="arrow-bar-down"></b-icon>
+        </template>
+      </b-navbar-toggle>
+
+      <b-collapse id="navbar-toggle-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item href="/ToDo">ToDo</b-nav-item>
+          <b-nav-item href="/Ping">Ping</b-nav-item>
+          <b-nav-item href="#" disabled>Disabled</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
   </div>
 </template>
 <script>
@@ -13,22 +25,8 @@ export default {
   name: 'NavBar',
 };
 </script>
-<style scoped>
+<style>
 #nav {
-  padding: 20px 10%;
-  background-color: white;
-}
-#nav-title {
-  color: white;
-  padding-left: 10px;
-  height: 100%;
-}
-
-.item {
-  color: white;
-  background-color: rgb(108, 108, 233);
-  margin: 1%;
-  padding: 1%;
-  border-radius: 5px;
+  padding: 15px 10%;
 }
 </style>

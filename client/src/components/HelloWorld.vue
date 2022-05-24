@@ -1,17 +1,15 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <a href="./ToDo">ToDo</a>
-    <a href="./Ping">Flask-message</a>
+    <img src="https://placekitten.com/g/500/500" alt="" />
   </div>
 </template>
-
 <script>
 export default {
   name: 'HelloWorld',
   data() {
     return {
-      msg: 'Hello to my page!',
+      msg: 'Welcome to my page!',
     };
   },
 };
