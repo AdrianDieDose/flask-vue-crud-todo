@@ -2,6 +2,7 @@ from urllib import response
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+# Adding psyco-pg here for the future
 
 # configuration
 DEBUG = True
