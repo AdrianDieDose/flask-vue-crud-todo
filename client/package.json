@@ -22,9 +22,10 @@
     "@vue/cli-service": "~4.5.11",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "babel-eslint": "^10.1.0",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-vue": "^6.2.2",
+    "vue-eslint-parser": "^9.0.2",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
@@ -34,7 +35,8 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "@vue/airbnb"
+      "@vue/airbnb",
+      "eslint:recommended"
     ],
     "parserOptions": {
       "parser": "babel-eslint"
@@ -45,10 +47,5 @@
     "> 1%",
     "last 2 versions",
     "not dead"
-  ],
-  "include": [
-    "./src/**/*"
-  ],
-  "lint": "eslint --ext \".js,.vue\" --ignore-path .gitignore .",
-  "lint-fix": "npm run lint -- --fix"
+  ]
 }

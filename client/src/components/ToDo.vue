@@ -17,10 +17,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>foo</td>
-              <td>bar</td>
-              <td>foobar</td>
+            <tr v-for="(todo, index) in todo" :key="index">
+              <td>{{ todo.task }}</td>
+              <td>{{ todo.author }}</td>
+              <td>
+                <span v-if="todo.done">Yes</span>
+                <span v-else>No</span>
+              </td>
               <td>
                 <div class="btn-group" role="group">
                   <button type="button" class="btn btn-warning btn-sm">Update</button>
@@ -36,10 +39,31 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'ToDo',
   data() {
-    return {};
+    return {
+      todo: [],
+    };
+  },
+  methods: {
+    getTodo() {
+      const path = 'http://localhost:5000/todo';
+      axios
+        .get(path)
+        .then((res) => {
+          this.todo = res.data.todo;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+        });
+    },
+  },
+  created() {
+    this.getTodo();
   },
 };
 </script>
