@@ -5,6 +5,8 @@
         <h1>To Do App</h1>
         <hr />
         <br /><br />
+        <alert :message="message" :showing="showMessage"></alert>
+        <button type="button" class="btn btn-warning btn-sm" @click="changeShow()">End</button>
         <button type="button" class="btn btn-success btn-sm" v-b-modal.todo-modal>Add Task</button>
         <br /><br />
         <table class="table table-hover">
@@ -72,6 +74,7 @@
 
 <script>
 import axios from 'axios';
+import Alert from './Alert.vue';
 
 export default {
   name: 'ToDo',
@@ -83,10 +86,15 @@ export default {
         author: '',
         done: [],
       },
+      message: '',
+      showMessage: false,
     };
   },
+  components: {
+    alert: Alert,
+  },
   methods: {
-    getTodo() {
+    getToDo() {
       const path = 'http://localhost:5000/todo';
       axios
         .get(path)
@@ -104,6 +112,8 @@ export default {
         .post(path, payload)
         .then(() => {
           this.getToDo();
+          this.message = 'Task added!';
+          this.showMessage = true;
         })
         .catch((error) => {
           // eslint-disable-next-line
@@ -119,12 +129,14 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addToDoModal.hide();
-      let read = false;
-      if (this.addToDoForm.done[0]) read = true;
+      let done = false;
+      if (this.addToDoForm.done[0]) {
+        done = true;
+      }
       const payload = {
         task: this.addToDoForm.task,
         author: this.addToDoForm.author,
-        read, // property shorthand
+        done, // property shorthand
       };
       this.addToDo(payload);
       this.initForm();
@@ -134,9 +146,12 @@ export default {
       this.$refs.addToDoModal.hide();
       this.initForm();
     },
+    changeShow() {
+      this.showMessage = false;
+    },
   },
   created() {
-    this.getTodo();
+    this.getToDo();
   },
 };
 </script>
