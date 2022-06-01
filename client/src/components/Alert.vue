@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert variant="success" :show="showing">{{ message }}</b-alert>
+    <b-alert id="alert" variant="success" :show="showing">{{ message }}</b-alert>
   </div>
 </template>
 

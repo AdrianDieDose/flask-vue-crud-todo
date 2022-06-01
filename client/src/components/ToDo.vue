@@ -5,8 +5,20 @@
         <h1>To Do App</h1>
         <hr />
         <br /><br />
-        <alert :message="message" :showing="showMessage"></alert>
-        <button type="button" class="btn btn-warning btn-sm" @click="changeShow()">End</button>
+        <b-row>
+          <alert class="col" id="alert" :message="message" :showing="showMessage"></alert>
+          <button
+            id="cancel-button"
+            v-show="showMessage"
+            type="button"
+            icon="chevron-bar-up"
+            class="btn btn-danger btn-sm w-1"
+            @click="changeShow()"
+          >
+            x
+          </button>
+        </b-row>
+
         <button type="button" class="btn btn-success btn-sm" v-b-modal.todo-modal>Add Task</button>
         <br /><br />
         <table class="table table-hover">
@@ -159,5 +171,17 @@ export default {
 <style scoped>
 .container {
   padding-left: 0;
+}
+
+#alert {
+  z-index: 1;
+  padding-right: 0;
+}
+
+#cancel-button {
+  z-index: 99;
+  height: 50px;
+
+  padding: 0.75rem 1.25rem;
 }
 </style>
