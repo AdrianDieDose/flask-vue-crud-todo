@@ -40,8 +40,17 @@
               </td>
               <td>
                 <div class="btn-group" role="group">
-                  <button type="button" class="btn btn-warning btn-sm">Update</button>
-                  <button type="button" class="btn btn-danger btn-sm">Delete</button>
+                  <button
+                    type="button"
+                    class="btn btn-warning btn-sm"
+                    v-b-modal.todo-update-modal
+                    @click="editTodo(todo)"
+                  >
+                    Update
+                  </button>
+                  <button type="button" class="btn btn-danger btn-sm" @click="onDeleteTask(todo)">
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -81,6 +90,44 @@
         <b-button type="reset" variant="danger">Reset</b-button>
       </b-form>
     </b-modal>
+
+    <b-modal ref="editTodoModal" id="todo-update-modal" title="Update" hide-footer>
+      <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
+        <b-form-group id="form-title-edit-group" label="Task:" label-for="form-task-edit-input">
+          <b-form-input
+            id="form-task-edit-input"
+            type="text"
+            v-model="editForm.task"
+            required
+            placeholder="Enter task"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group
+          id="form-author-edit-group"
+          label="Author:"
+          label-for="form-author-edit-input"
+        >
+          <b-form-input
+            id="form-author-edit-input"
+            type="text"
+            v-model="editForm.author"
+            required
+            placeholder="Enter author"
+          >
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-done-edit-group">
+          <b-form-checkbox-group v-model="editForm.done" id="form-checks">
+            <b-form-checkbox value="true">Done?</b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+        <b-button-group>
+          <b-button type="submit" variant="primary">Update</b-button>
+          <b-button type="reset" variant="danger">Cancel</b-button>
+        </b-button-group>
+      </b-form>
+    </b-modal>
   </div>
 </template>
 
@@ -100,6 +147,13 @@ export default {
       },
       message: '',
       showMessage: false,
+
+      editForm: {
+        id: '',
+        task: '',
+        author: '',
+        done: [],
+      },
     };
   },
   components: {
@@ -133,10 +187,15 @@ export default {
           this.getToDo();
         });
     },
+
     initForm() {
       this.addToDoForm.task = '';
       this.addToDoForm.author = '';
       this.addToDoForm.done = [];
+      this.editForm.id = '';
+      this.editForm.task = '';
+      this.editForm.author = '';
+      this.editForm.done = [];
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -160,6 +219,62 @@ export default {
     },
     changeShow() {
       this.showMessage = false;
+    },
+    editTodo(todo) {
+      this.editForm = todo;
+    },
+    onSubmitUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editTodoModal.hide();
+      let done = false;
+      if (this.editForm.done[0]) done = true;
+      const payload = {
+        task: this.editForm.task,
+        author: this.editForm.author,
+        done,
+      };
+      this.updateTodo(payload, this.editForm.id);
+    },
+
+    onResetUpdate(evt) {
+      evt.preventDefault();
+      this.$refs.editTodoModal.hide();
+      this.initForm();
+      this.getTodo(); // why?
+    },
+    updateTodo(payload, todoID) {
+      const path = `http://localhost:5000/todo/${todoID}`;
+      axios
+        .put(path, payload)
+        .then(() => {
+          this.getToDo();
+          this.message = 'Task updated!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getToDo();
+        });
+    },
+    removeTask(todoID) {
+      const path = `http://localhost:5000/todo/${todoID}`;
+      axios
+        .delete(path)
+        .then(() => {
+          this.getToDo();
+          this.message = 'Task removed!';
+          this.showMessage = true;
+        })
+        .catch((error) => {
+          // eslint-disable-next-line
+          console.error(error);
+          this.getToDo();
+        });
+    },
+    onDeleteTask(task) {
+      console.log(task);
+      this.removeTask(task.id);
     },
   },
   created() {

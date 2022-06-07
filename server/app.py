@@ -61,21 +61,22 @@ def all_todo():
 
 
 # Add case if the id is not existing or Payload not correct.
-@app.route('/todo/<todo_id>', methods=['PUT'])
+@app.route('/todo/<todo_id>', methods=['PUT', 'DELETE'])
 def single_todo(todo_id):
     response_object = {'staus': 'success'}
     if request.method == 'PUT':
         post_data = request.get_json()
-        if(remove_todo(todo_id)):
-            TODO.append({
-                'task': post_data.get('task'),
-                'author': post_data.get('author'),
-                'done': post_data.get('done'),
-                'id': uuid.uuid4().hex
-            })
-            response_object['message'] = 'ToDo updated!'
-        else:
-            print('Wrong/Missing ID')
+        remove_todo(todo_id)
+        TODO.append({
+            'task': post_data.get('task'),
+            'author': post_data.get('author'),
+            'done': post_data.get('done'),
+            'id': uuid.uuid4().hex
+        })
+        response_object['message'] = 'Task updated!'
+    if request.method == 'DELETE':
+        remove_todo(todo_id)
+        response_object['message'] = 'Task removed!'
     return jsonify(response_object)
 
 
