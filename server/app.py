@@ -1,4 +1,5 @@
 from urllib import response
+import uuid
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
@@ -24,17 +25,20 @@ TODO = [
     {
         'task': 'Feed cats',
         'author': 'Adrian',
-        'done': True
+        'done': True,
+        'id': uuid.uuid4().hex
     },
     {
         'task': 'Make food',
         'author': 'Adrian',
-        'done': False
+        'done': False,
+        'id': uuid.uuid4().hex
     },
     {
         'task': 'Fix brain',
         'author': 'Janick',
-        'done': False
+        'done': False,
+        'id': uuid.uuid4().hex
     }
 ]
 
@@ -47,12 +51,40 @@ def all_todo():
         TODO.append({
             'task': post_data.get('task'),
             'author': post_data.get('author'),
-            'done': post_data.get('done')
+            'done': post_data.get('done'),
+            'id': uuid.uuid4().hex
         })
         response_object['message'] = 'Task added!'
     else:
         response_object['todo'] = TODO
     return jsonify(response_object)
+
+
+# Add case if the id is not existing or Payload not correct.
+@app.route('/todo/<todo_id>', methods=['PUT'])
+def single_todo(todo_id):
+    response_object = {'staus': 'success'}
+    if request.method == 'PUT':
+        post_data = request.get_json()
+        if(remove_todo(todo_id)):
+            TODO.append({
+                'task': post_data.get('task'),
+                'author': post_data.get('author'),
+                'done': post_data.get('done'),
+                'id': uuid.uuid4().hex
+            })
+            response_object['message'] = 'ToDo updated!'
+        else:
+            print('Wrong/Missing ID')
+    return jsonify(response_object)
+
+
+def remove_todo(todo_id):
+    for todo in TODO:
+        if todo['id'] == todo_id:
+            TODO.remove(todo)
+            return True
+    return False
 
 
 if __name__ == '__main__':
