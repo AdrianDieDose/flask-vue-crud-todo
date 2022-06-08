@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h1>To Do App</h1>
+        <h1>CRUD - To Do App</h1>
         <hr />
         <br /><br />
         <b-row>
@@ -273,7 +273,6 @@ export default {
         });
     },
     onDeleteTask(task) {
-      console.log(task);
       this.removeTask(task.id);
     },
   },
