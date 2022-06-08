@@ -63,7 +63,7 @@ def all_todo():
     else:
 
         getData()
-        print(TODO)
+        # print(TODO)
         response_object['todo'] = TODO
     return jsonify(response_object)
 
@@ -83,12 +83,13 @@ def single_todo(todo_id):
         })
         response_object['message'] = 'Task updated!'
     if request.method == 'DELETE':
-        remove_todo(todo_id)
+        removeData(todo_id)
         response_object['message'] = 'Task removed!'
     return jsonify(response_object)
 
 
 def remove_todo(todo_id):
+    print(TODO)
     for todo in TODO:
         if todo['id'] == todo_id:
             TODO.remove(todo)
@@ -105,7 +106,7 @@ def getData():
         params = config()
 
         # connect to the PostgreSQL server
-        print('Connecting to the PostgreSQL databse...')
+        print('Connecting to the PostgreSQL databse for read...')
         conn = psycopg2.connect(**params)
 
         # create a cursor
@@ -113,7 +114,7 @@ def getData():
 
         # Print table content
         # print('PostgresSQL city:')
-        cur.execute('SELECT task, author, done FROM todos')
+        cur.execute('SELECT id, task, author, done FROM todos')
         # Clears array because of reload dupplication
         TODO.clear()
         for result in cur.fetchall():
@@ -122,16 +123,6 @@ def getData():
             TODO.append(result)
             print('GOT DATA')
            # print(json.dumps(result))
-
-        # Print db version
-        '''
-        print('PostgresSQL database version:')
-        cur.execute('SELECT version()')
-        
-        # display the PostgreSQL database server version
-        db_version = cur.fetchone()
-        print(db_version)
-        '''
 
         # close the communication with PostgreSQL
         cur.close()
@@ -143,7 +134,8 @@ def getData():
             print('Databse conenction closed.')
 
 
-def setData():
+# Database write:
+def setData(id, task, author, done):
     # Connect to the PostgresSQL database server
     conn = None
     try:
@@ -155,10 +147,47 @@ def setData():
         conn = psycopg2.connect(**params)
 
         # create a cursor
-        cur = conn.cursor(cursor_factory=RealDictCursor)
+        cur = conn.cursor()
 
-        # SQL FOR: PUT / UPDATE
+        cur.execute('INSERT INTO todos (id, task, author, done)'
+                    'VALUES (%s, %s, %s, %s)',
+                    (id,
+                     task,
+                     author,
+                     done)
+                    )
 
+        conn.commit()
+        # close the communication with PostgreSQL
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Databse conenction closed.')
+
+
+# Database remove:
+def removeData(todoID):
+    # Connect to the PostgresSQL database server
+    conn = None
+    try:
+        # read connection parameters
+        params = config()
+
+        # connect to the PostgreSQL server
+        print('Connecting to the PostgreSQL databse for delete...')
+        conn = psycopg2.connect(**params)
+
+        # create a cursor
+        cur = conn.cursor()
+
+        cur.execute(f'DELETE FROM todos WHERE id= {todoID};')
+
+        conn.commit()
+        # close the communication with PostgreSQL
+        cur.close()
     except (Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
@@ -168,4 +197,5 @@ def setData():
 
 
 if __name__ == '__main__':
+    #setData('4626246', 'Save me', 'Friends', 'false')
     app.run()

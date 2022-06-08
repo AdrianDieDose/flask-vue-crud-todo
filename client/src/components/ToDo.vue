@@ -119,7 +119,7 @@
         </b-form-group>
         <b-form-group id="form-done-edit-group">
           <b-form-checkbox-group v-model="editForm.done" id="form-checks">
-            <b-form-checkbox value="true">Done?</b-form-checkbox>
+            <b-form-checkbox value="editForm.done">Done?</b-form-checkbox>
           </b-form-checkbox-group>
         </b-form-group>
         <b-button-group>

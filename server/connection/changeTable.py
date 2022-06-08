@@ -20,21 +20,19 @@ cur.execute('CREATE TABLE todos (id serial PRIMARY KEY,'
             )
 
 # Insert data into the table
+id = '1325125'
+task = 'Go sleep'
+author = 'me'
+done = 'true'
 
-cur.execute('INSERT INTO todos (task, author, done)'
-            'VALUES (%s, %s, %s)',
-            ('Work at Sit&Watch',
-             'Adrian!',
-             'false')
+cur.execute('INSERT INTO todos (id, task, author, done)'
+            'VALUES (%s, %s, %s, %s)',
+            (id,
+             task,
+             author,
+             done)
             )
 
-
-cur.execute('INSERT INTO todos (task, author, done)'
-            'VALUES (%s, %s, %s)',
-            ('Get Candy',
-             'Janick!',
-             'false')
-            )
 
 conn.commit()
 

@@ -15,9 +15,9 @@ cur = conn.cursor()
 
 cur.execute('INSERT INTO todos (task, author, done)'
             'VALUES (%s, %s, %s)',
-            ('Get Candy',
-             'Janick!',
-             'false')
+            ('Get Love',
+             'Julia!',
+             'true')
             )
 
 
