@@ -26,26 +26,6 @@ def ping_pong():
 
 
 TODO = []
-# TODO = [
-#     {
-#         'task': 'Feed cats',
-#         'author': 'Adrian',
-#         'done': True,
-#         'id': uuid.uuid4().hex
-#     },
-#     {
-#         'task': 'Make food',
-#         'author': 'Adrian',
-#         'done': False,
-#         'id': uuid.uuid4().hex
-#     },
-#     {
-#         'task': 'Fix brain',
-#         'author': 'Janick',
-#         'done': False,
-#         'id': uuid.uuid4().hex
-#     }
-# ]
 
 
 @app.route('/todo', methods=['GET', 'POST'])
@@ -53,15 +33,10 @@ def all_todo():
     response_object = {'status': 'success'}
     if request.method == 'POST':
         post_data = request.get_json()
-        TODO.append({
-            'task': post_data.get('task'),
-            'author': post_data.get('author'),
-            'done': post_data.get('done'),
-            'id': uuid.uuid4().hex
-        })
+        insertData(uuid.uuid4().hex, post_data.get('task'), post_data.get('author'),
+                   post_data.get('done'))
         response_object['message'] = 'Task added!'
     else:
-
         getData()
         # print(TODO)
         response_object['todo'] = TODO
@@ -74,27 +49,13 @@ def single_todo(todo_id):
     response_object = {'staus': 'success'}
     if request.method == 'PUT':
         post_data = request.get_json()
-        remove_todo(todo_id)
-        TODO.append({
-            'task': post_data.get('task'),
-            'author': post_data.get('author'),
-            'done': post_data.get('done'),
-            'id': uuid.uuid4().hex
-        })
+        updateData(todo_id, post_data.get('task'), post_data.get('author'),
+                   post_data.get('done'))
         response_object['message'] = 'Task updated!'
     if request.method == 'DELETE':
         removeData(todo_id)
         response_object['message'] = 'Task removed!'
     return jsonify(response_object)
-
-
-def remove_todo(todo_id):
-    print(TODO)
-    for todo in TODO:
-        if todo['id'] == todo_id:
-            TODO.remove(todo)
-            return True
-    return False
 
 
 # Database connection:
@@ -112,14 +73,11 @@ def getData():
         # create a cursor
         cur = conn.cursor(cursor_factory=RealDictCursor)
 
-        # Print table content
-        # print('PostgresSQL city:')
+        # Executes statement
         cur.execute('SELECT id, task, author, done FROM todos')
         # Clears array because of reload dupplication
         TODO.clear()
         for result in cur.fetchall():
-            #res = dict([(key, value) for key, value in r])
-
             TODO.append(result)
             print('GOT DATA')
            # print(json.dumps(result))
@@ -135,7 +93,7 @@ def getData():
 
 
 # Database write:
-def setData(id, task, author, done):
+def insertData(id, task, author, done):
     # Connect to the PostgresSQL database server
     conn = None
     try:
@@ -182,8 +140,37 @@ def removeData(todoID):
 
         # create a cursor
         cur = conn.cursor()
+        cur.execute(f"DELETE FROM todos WHERE id = '{todoID}';")
 
-        cur.execute(f'DELETE FROM todos WHERE id= {todoID};')
+        conn.commit()
+        # close the communication with PostgreSQL
+        cur.close()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print(error)
+    finally:
+        if conn is not None:
+            conn.close()
+            print('Databse conenction closed.')
+
+
+def updateData(id, task, author, done):
+    # Connect to the PostgresSQL database server
+    conn = None
+    try:
+        # read connection parameters
+        params = config()
+
+        # connect to the PostgreSQL server
+        print('Connecting to the PostgreSQL databse...')
+        conn = psycopg2.connect(**params)
+
+        # create a cursor
+        cur = conn.cursor()
+
+        print(
+            f"UPDATE todos SET task = '{task}', author = '{author}', done = '{done}' WHERE id = '{id}';")
+        cur.execute(
+            f"UPDATE todos SET task = '{task}', author = '{author}', done = '{done}' WHERE id = '{id}';")
 
         conn.commit()
         # close the communication with PostgreSQL
@@ -197,5 +184,5 @@ def removeData(todoID):
 
 
 if __name__ == '__main__':
-    #setData('4626246', 'Save me', 'Friends', 'false')
+    #insertData('4626246', 'Save me', 'Friends', 'false')
     app.run()

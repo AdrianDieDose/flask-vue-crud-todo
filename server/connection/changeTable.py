@@ -12,15 +12,15 @@ cur = conn.cursor()
 
 # Execute a command: this creates a new table
 cur.execute('DROP TABLE IF EXISTS todos;')
-cur.execute('CREATE TABLE todos (id serial PRIMARY KEY,'
-            'task varchar (150) NOT NULL,'
-            'author varchar (50) NOT NULL,'
+cur.execute('CREATE TABLE todos (id uuid PRIMARY KEY,'
+            'task text NOT NULL,'
+            'author text NOT NULL,'
             'done boolean,'
             'date_added date DEFAULT CURRENT_TIMESTAMP);'
             )
 
 # Insert data into the table
-id = '1325125'
+id = 'c69fd51e40f145ddbd6c07958cd70451'
 task = 'Go sleep'
 author = 'me'
 done = 'true'

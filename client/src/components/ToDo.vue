@@ -119,7 +119,7 @@
         </b-form-group>
         <b-form-group id="form-done-edit-group">
           <b-form-checkbox-group v-model="editForm.done" id="form-checks">
-            <b-form-checkbox value="editForm.done">Done?</b-form-checkbox>
+            <b-form-checkbox value="true">Done?</b-form-checkbox>
           </b-form-checkbox-group>
         </b-form-group>
         <b-button-group>
@@ -178,6 +178,8 @@ export default {
         .post(path, payload)
         .then(() => {
           this.getToDo();
+        })
+        .then(() => {
           this.message = 'Task added!';
           this.showMessage = true;
         })
@@ -221,7 +223,10 @@ export default {
       this.showMessage = false;
     },
     editTodo(todo) {
+      // Checkbox error by passing the raw object with done not in arrays.
+      // Now fixed
       this.editForm = todo;
+      this.editForm.done = [todo.done];
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
