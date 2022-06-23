@@ -1,4 +1,4 @@
-# This application is to connect Vue2 via Flask.
+# This is a small Fullstack TODO app.
 
 This app was made with Vue and Python.
 
