@@ -2,7 +2,8 @@
   <div class="container">
     <div class="row">
       <div class="col-sm-10">
-        <h1>CRUD - To Do App</h1>
+        <h1>RESTful - To Do App</h1>
+        <p>Need fix: when update clicked done turns yes and when canceled data gets deleted.</p>
         <hr />
         <br /><br />
         <b-row>
@@ -124,7 +125,8 @@
         </b-form-group>
         <b-button-group>
           <b-button type="submit" variant="primary">Update</b-button>
-          <b-button type="reset" variant="danger">Cancel</b-button>
+          <!-- need fix -->
+          <b-button type="button" @click="onResetUpdate" variant="danger">Cancel</b-button>
         </b-button-group>
       </b-form>
     </b-modal>
@@ -226,7 +228,8 @@ export default {
       // Checkbox error by passing the raw object with done not in arrays.
       // Now fixed
       this.editForm = todo;
-      this.editForm.done = [todo.done];
+      // This fixed console error but bugs out (Bug on top) ....FIX???
+      // this.editForm.done = [todo.done];
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
@@ -244,8 +247,9 @@ export default {
     onResetUpdate(evt) {
       evt.preventDefault();
       this.$refs.editTodoModal.hide();
-      this.initForm();
-      this.getTodo(); // why?
+      // Beacuse of initForm the row gets deleted but reloaded in getToDo... FIX?
+      // this.initForm();
+      this.getToDo(); // why?
     },
     updateTodo(payload, todoID) {
       const path = `http://localhost:5000/todo/${todoID}`;
